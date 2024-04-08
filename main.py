@@ -10,9 +10,8 @@ LONGUEUR = 800
 LARGEUR = 800
 PX_DEPLACEMENT = 20
 COULEUR_FOND = (38, 82, 99)
-RAYON = 20
+COTE = 25
 DELAI_ENTRE_LES_COUPS = 50
-CORRECTION = RAYON + RAYON // 4
 AUGMENTATION = 4
 
 
@@ -38,13 +37,13 @@ class Game:
         return math.sqrt((b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]))
 
     def dessiner(self, pos: tuple[int, int], couleur: str = 'white') -> None:
-        """Dessine sur le plateau un cercle de centre pos et de couleur spécifiée"""
-        pygame.draw.circle(self.fen, couleur, pos, RAYON)
+        """Dessine sur le plateau un carré de coin supérieur gauche pos et de couleur spécifiée"""
+        pygame.draw.rect(self.fen, couleur, (*pos, COTE, COTE))
         return None
 
     def supprimer(self, pos: tuple[int, int]) -> None:
-        """Supprime le cercle de centre pos en redessinant un cercle de centre identique de couleur COULEUR_FOND """
-        pygame.draw.circle(self.fen, COULEUR_FOND, pos, RAYON)
+        """Supprime le carré de coin supérieur gauche pos en redessinant un carré de couleur COULEUR_FOND """
+        pygame.draw.rect(self.fen, COULEUR_FOND, (*pos, COTE, COTE))
         return None
 
     def generer_pomme(self) -> tuple[int, int]:
@@ -101,7 +100,7 @@ class Game:
                     self.nouvelle_pos = self.commandes.get(event.key)
 
             distance_pomme = self.distance((self.x, self.y), (x_pomme, y_pomme))
-            if distance_pomme < RAYON + CORRECTION:
+            if distance_pomme < COTE:
                 self.supprimer((x_pomme, y_pomme))
                 self.longueur += AUGMENTATION
                 x_pomme, y_pomme = self.generer_pomme()
@@ -111,7 +110,6 @@ class Game:
 
             pygame.time.delay(DELAI_ENTRE_LES_COUPS)
             pygame.display.flip()
-        pygame.quit()
 
 
 if __name__ == '__main__':
