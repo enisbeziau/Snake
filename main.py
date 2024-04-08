@@ -8,8 +8,10 @@ pygame.init()
 
 LONGUEUR = 800
 LARGEUR = 800
-PX_DEPLACEMENT = 20
 COULEUR_FOND = (38, 82, 99)
+
+
+PX_DEPLACEMENT = 20
 COTE = 25
 DELAI_ENTRE_LES_COUPS = 50
 AUGMENTATION = 4
@@ -20,7 +22,7 @@ class Game:
         self.fen = pygame.display.set_mode((LONGUEUR, LARGEUR))
         self.running = True
         self.nouvelle_pos = None
-        self.longueur = 0
+        self.longueur, self.pommes = 0, 0
         self.x, self.y = LONGUEUR // 2, LARGEUR // 2
         self.tab_pos: list[tuple[int, int]] = []
         self.commandes = {
@@ -87,6 +89,19 @@ class Game:
             self.running = False
         return None
 
+    def afficher_score(self) -> None:
+        """Affiche le nbr de pommes en haut à droite de l'écran"""
+        police = pygame.font.Font('freesansbold.ttf', 25)
+        txt = police.render(
+            f"Nombre de pommes ramassées : {self.pommes}",
+            True,
+            'white', 'black')
+        txt.set_colorkey((0, 0, 0))
+        zone_de_txt = txt.get_rect()
+        zone_de_txt.center = (LARGEUR - 250, 20)
+        self.fen.blit(txt, zone_de_txt)
+        return None
+
     def run(self) -> None:
         """Fonction contenant la boucle interne du jeu"""
         self.dessiner((self.x, self.y))
@@ -103,11 +118,13 @@ class Game:
             if distance_pomme < COTE:
                 self.supprimer((x_pomme, y_pomme))
                 self.longueur += AUGMENTATION
+                self.pommes += 1
                 x_pomme, y_pomme = self.generer_pomme()
 
             if self.nouvelle_pos is not None:
                 self.deplacer(self.nouvelle_pos)
 
+            self.afficher_score()
             pygame.time.delay(DELAI_ENTRE_LES_COUPS)
             pygame.display.flip()
 
