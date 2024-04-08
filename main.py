@@ -11,7 +11,9 @@ LARGEUR = 800
 PX_DEPLACEMENT = 20
 COULEUR_FOND = (38, 82, 99)
 RAYON = 20
-LONGUEUR_DEPART = 1
+DELAI_ENTRE_LES_COUPS = 50
+CORRECTION = RAYON + RAYON // 4
+AUGMENTATION = 4
 
 
 class Game:
@@ -69,6 +71,7 @@ class Game:
         return (0 <= futur_x <= LARGEUR and 0 <= futur_y <= LONGUEUR) and (futur_x, futur_y) not in self.tab_pos
 
     def deplacer(self, pos: tuple[int, int]) -> None:
+        """Fonction de gestion d'un tour"""
 
         if self.verif_prochain_coup(pos):
 
@@ -86,6 +89,7 @@ class Game:
         return None
 
     def run(self) -> None:
+        """Fonction contenant la boucle interne du jeu"""
         self.dessiner((self.x, self.y))
         self.tab_pos.append((self.x, self.y))
         x_pomme, y_pomme = self.generer_pomme()
@@ -97,15 +101,15 @@ class Game:
                     self.nouvelle_pos = self.commandes.get(event.key)
 
             distance_pomme = self.distance((self.x, self.y), (x_pomme, y_pomme))
-            if distance_pomme < RAYON + RAYON//5:
+            if distance_pomme < RAYON + CORRECTION:
                 self.supprimer((x_pomme, y_pomme))
-                self.longueur += 1
+                self.longueur += AUGMENTATION
                 x_pomme, y_pomme = self.generer_pomme()
 
             if self.nouvelle_pos is not None:
                 self.deplacer(self.nouvelle_pos)
 
-            pygame.time.delay(100)
+            pygame.time.delay(DELAI_ENTRE_LES_COUPS)
             pygame.display.flip()
         pygame.quit()
 
