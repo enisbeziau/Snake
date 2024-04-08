@@ -5,6 +5,7 @@ import math
 
 pygame.init()
 
+POLICE = pygame.font.Font('freesansbold.ttf', 25)
 
 LONGUEUR = 800
 LARGEUR = 800
@@ -54,7 +55,7 @@ class Game:
         pour que les coordonnées soient valides, il faut que celles-ci ne tombent pas sur le serpent
         """
         while True:
-            x, y = random.randint(10, LARGEUR), random.randint(10, LONGUEUR)
+            x, y = random.randint(100, LARGEUR), random.randint(100, LONGUEUR)
             if (x, y) not in self.tab_pos:
                 break
         self.dessiner((x, y), 'red')
@@ -69,7 +70,7 @@ class Game:
         """
         futur_x = prochaine_pos[0] + self.x
         futur_y = prochaine_pos[1] + self.y
-        return (0 <= futur_x <= LARGEUR and 0 <= futur_y <= LONGUEUR) and (futur_x, futur_y) not in self.tab_pos
+        return (2 <= futur_x <= LARGEUR - 2 and 2 <= futur_y <= LONGUEUR - 2) and (futur_x, futur_y) not in self.tab_pos
 
     def deplacer(self, pos: tuple[int, int]) -> None:
         """Fonction de gestion d'un tour"""
@@ -91,8 +92,8 @@ class Game:
 
     def afficher_score(self) -> None:
         """Affiche le nbr de pommes en haut à droite de l'écran"""
-        police = pygame.font.Font('freesansbold.ttf', 25)
-        txt = police.render(
+        self.fen.fill(COULEUR_FOND, (LARGEUR - 300, 0, 300, 50))
+        txt = POLICE.render(
             f"Nombre de pommes ramassées : {self.pommes}",
             True,
             'white', 'black')
@@ -114,6 +115,8 @@ class Game:
                 elif event.type == pygame.KEYDOWN and event.key in self.commandes.keys():
                     self.nouvelle_pos = self.commandes.get(event.key)
 
+            self.afficher_score()
+
             distance_pomme = self.distance((self.x, self.y), (x_pomme, y_pomme))
             if distance_pomme < COTE:
                 self.supprimer((x_pomme, y_pomme))
@@ -124,10 +127,8 @@ class Game:
             if self.nouvelle_pos is not None:
                 self.deplacer(self.nouvelle_pos)
 
-            self.afficher_score()
             pygame.time.delay(DELAI_ENTRE_LES_COUPS)
             pygame.display.flip()
-
 
 if __name__ == '__main__':
     game = Game()
