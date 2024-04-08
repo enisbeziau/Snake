@@ -55,7 +55,7 @@ class Game:
         pour que les coordonnées soient valides, il faut que celles-ci ne tombent pas sur le serpent
         """
         while True:
-            x, y = random.randint(100, LARGEUR), random.randint(100, LONGUEUR)
+            x, y = random.randint(100, LARGEUR - 100), random.randint(100, LONGUEUR - 100)
             if (x, y) not in self.tab_pos:
                 break
         self.dessiner((x, y), 'red')
@@ -129,6 +129,7 @@ class Game:
 
             pygame.time.delay(DELAI_ENTRE_LES_COUPS)
             pygame.display.flip()
+
 
 if __name__ == '__main__':
     game = Game()
